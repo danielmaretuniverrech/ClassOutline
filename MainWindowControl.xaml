@@ -1,0 +1,70 @@
+﻿<UserControl x:Class="ClassOutline.MainWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0" xmlns:classes="clr-namespace:ClassOutline.Classes"
+             Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
+             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
+             mc:Ignorable="d"
+             d:DesignHeight="300" d:DesignWidth="300"
+             Name="ClassOutline2022">
+    <UserControl.Resources>
+        <classes:NullImageConverter x:Key="NullImageConverter"></classes:NullImageConverter>
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Orientation="Vertical">
+            <ToolBarTray DockPanel.Dock="Top">
+                <ToolBar x:Name="toolbar">
+                    <ToggleButton x:Name="MagicDisplay" Content="Magic" IsChecked="True" Checked="MagicDisplay_Checked" Unchecked="MagicDisplay_Checked"></ToggleButton>
+                    <Separator></Separator>
+                    <Button x:Name="cmdTest" Content="Refresh" Click="cmdTest_Click"></Button>
+                </ToolBar>
+            </ToolBarTray>
+            <TreeView x:Name="treeView" RenderTransformOrigin="0.498,0.733">
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="x:Type self:OutlineItem" ItemsSource="{Binding Children}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="16" Name="Image"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto" Name="Name"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="Resource.Classes"></Image>
+                            <Border Grid.Column="1">
+                                <TextBlock Text="{Binding Name}">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsUIController}" Value="true">
+                                                    <Setter Property="FontWeight" Value="Bold"></Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <TextBlock.ContextMenu>
+                                        <ContextMenu ItemsSource="{Binding MenuItems}">
+                                            <ContextMenu.ItemContainerStyle>
+                                                <Style TargetType="{x:Type MenuItem}" BasedOn="{StaticResource  {x:Type MenuItem}}">
+                                                    <Setter Property="MenuItem.Header" Value="{Binding Caption}"></Setter>
+                                                    <Setter Property="MenuItem.Command" Value="{Binding Command}"></Setter>
+                                                    <Setter Property="ItemsSource" Value="{Binding MenuItems}"></Setter>
+                                                </Style>
+                                            </ContextMenu.ItemContainerStyle>
+                                        </ContextMenu>
+                                    </TextBlock.ContextMenu>
+                                </TextBlock>
+                            </Border>
+                        </Grid>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick"></EventSetter>
+                        <Setter Property="IsExpanded" Value="True"></Setter>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+            </TreeView>
+        </StackPanel>
+    </Grid>
+</UserControl>
